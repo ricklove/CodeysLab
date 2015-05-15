@@ -10,3 +10,7 @@
 ## 12:01-12:17
 
 - Add Git2Site
+
+## 12:18-13:29
+
+- Update links
