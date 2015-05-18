@@ -60,6 +60,14 @@ public class Handler : IHttpHandler
             var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
             var pastYear = now - new TimeSpan(365, 0, 0, 0);
 
+            message += lastActivity.Where(a => a > past1Hour).Count() + " Users Active in Past 1 Hour\r\n";
+            message += lastActivity.Where(a => a > past6Hours).Count() + " Users Active in Past 6 Hours\r\n";
+            message += lastActivity.Where(a => a > past24Hours).Count() + " Users Active in Past 24 Hours\r\n";
+            message += lastActivity.Where(a => a > past1Week).Count() + " Users Active in Past 1 Week\r\n";
+            message += lastActivity.Where(a => a > past4Weeks).Count() + " Users Active in Past 4 Weeks\r\n";
+            message += lastActivity.Where(a => a > past12Weeks).Count() + " Users Active in Past 12 Weeks\r\n";
+            message += lastActivity.Where(a => a > pastYear).Count() + " Users Active in Past 1 Year\r\n";
+            message += lastActivity.Count() + " Users Active Forever\r\n";
 
             message += activity;
         }
