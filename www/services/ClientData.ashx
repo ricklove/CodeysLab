@@ -37,14 +37,31 @@ public class Handler : IHttpHandler
             var clientID = BitConverter.ToUInt64(File.ReadAllBytes(ClientDataRootPath + "\\nextClientID.bin"), 0);
 
             message += "Next Client ID = " + clientID + "\r\n";
+
+            var activity = "";
+            var lastActivity = new System.Collections.Generic.List<DateTime>();
+
             foreach (var dir in Directory.GetDirectories(ClientDataRootPath))
             {
                 foreach (var f in Directory.GetFiles(dir))
                 {
                     var fileInfo = new FileInfo(f);
-                    message += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
+                    activity += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
+                    lastActivity.Add(fileInfo.LastWriteTimeUtc);
                 }
             }
+
+            var now = DateTime.UtcNow;
+            var past1Hour = now - new TimeSpan(1, 0, 0);
+            var past6Hours = now - new TimeSpan(6, 0, 0);
+            var past24Hours = now - new TimeSpan(1, 0, 0, 0);
+            var past1Week = now - new TimeSpan(7, 0, 0, 0);
+            var past4Weeks = now - new TimeSpan(28, 0, 0, 0);
+            var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
+            var pastYear = now - new TimeSpan(365, 0, 0, 0);
+
+
+            message += activity;
         }
 
         context.Response.ContentType = "text/plain";
