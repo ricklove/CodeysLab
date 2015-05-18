@@ -67,7 +67,7 @@ public class Handler : IHttpHandler
             var activityClientID = qs["ActivityClientID"];
             if (activityClientID != null)
             {
-                var path = ClientDataRootPath + "\\" + activityClientID + "\\";
+                var path = ClientDataRootPath + "\\" + activityClientID + "\\log.txt";
                 clientActivity = File.ReadAllText(path);
             }
 

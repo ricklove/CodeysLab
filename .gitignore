@@ -235,3 +235,5 @@ $RECYCLE.BIN/
 Assets/
 
 
+www/ClientData/
+www/ClientData/nextClientID.bin
