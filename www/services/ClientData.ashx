@@ -64,9 +64,10 @@ public class Handler : IHttpHandler
 
             // Specific client activity
             var clientActivity = "";
-            if (qs["ActivityClientID"] != null)
+            var activityClientID = qs["ActivityClientID"];
+            if (activityClientID != null)
             {
-                var path = ClientDataRootPath + "\\" + qs["ClientID"] + "\\";
+                var path = ClientDataRootPath + "\\" + activityClientID + "\\";
                 clientActivity = File.ReadAllText(path);
             }
 
@@ -82,15 +83,18 @@ public class Handler : IHttpHandler
             message += lastActivity.Count() + " Users Active Forever\r\n";
             message += "\r\n";
             message += activity;
-            
-            message += "\r\n";
-            message += "\r\n";
-            message += "\r\n";
-            message += "Activity forClientID = " + qs["ClientID"];
-            message += "\r\n";
-            message += "\r\n";
 
-            message += clientActivity;
+            if (clientActivity != "")
+            {
+                message += "\r\n";
+                message += "\r\n";
+                message += "\r\n";
+                message += "Activity for ClientID = " + activityClientID;
+                message += "\r\n";
+                message += "\r\n";
+
+                message += clientActivity;
+            }
         }
 
         context.Response.ContentType = "text/plain";
