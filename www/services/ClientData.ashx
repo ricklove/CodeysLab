@@ -122,13 +122,14 @@ public class Handler : IHttpHandler
         return null;
     }
 
+    // Logging
     public void AddToClientLog(ulong clientID, string message)
     {
         var dir = ClientDataRootPath + "\\" + clientID + "\\";
         var path = dir + "log.txt";
         var normalized = message.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
-        
+
         File.AppendAllText(path, time + "\t" + normalized);
     }
 
