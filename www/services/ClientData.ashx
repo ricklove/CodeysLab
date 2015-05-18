@@ -47,7 +47,11 @@ public class Handler : IHttpHandler
                 {
                     var fileInfo = new FileInfo(f);
                     activity += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
-                    lastActivity.Add(fileInfo.LastWriteTimeUtc);
+
+                    if (f.Contains("log.txt"))
+                    {
+                        lastActivity.Add(fileInfo.LastWriteTimeUtc);
+                    }
                 }
             }
 
