@@ -34,9 +34,7 @@ public class Handler : IHttpHandler
         }
         else if (qs["GetReport"] == "VeryYes")
         {
-            var clientID = BitConverter.ToUInt64(File.ReadAllBytes(ClientDataRootPath + "\\nextClientID.bin"), 0);
-
-            message += "Next Client ID = " + clientID + "\r\n";
+            var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(ClientDataRootPath + "\\nextClientID.bin"), 0);
 
             var activity = "";
             var lastActivity = new System.Collections.Generic.List<DateTime>();
@@ -64,6 +62,16 @@ public class Handler : IHttpHandler
             var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
             var pastYear = now - new TimeSpan(365, 0, 0, 0);
 
+            // Specific client activity
+            var clientActivity = "";
+            if (qs["ClientID"] != null)
+            {
+                var path = ClientDataRootPath + "\\" + qs["ClientID"] + "\\";
+                clientActivity = File.ReadAllText(path);
+            }
+
+            message += "Next Client ID = " + nextClientID + "\r\n";
+            message += "\r\n";
             message += lastActivity.Where(a => a > past1Hour).Count() + " Users Active in Past 1 Hour\r\n";
             message += lastActivity.Where(a => a > past6Hours).Count() + " Users Active in Past 6 Hours\r\n";
             message += lastActivity.Where(a => a > past24Hours).Count() + " Users Active in Past 24 Hours\r\n";
@@ -72,8 +80,17 @@ public class Handler : IHttpHandler
             message += lastActivity.Where(a => a > past12Weeks).Count() + " Users Active in Past 12 Weeks\r\n";
             message += lastActivity.Where(a => a > pastYear).Count() + " Users Active in Past 1 Year\r\n";
             message += lastActivity.Count() + " Users Active Forever\r\n";
-
+            message += "\r\n";
             message += activity;
+            
+            message += "\r\n";
+            message += "\r\n";
+            message += "\r\n";
+            message += "Activity forClientID = " + qs["ClientID"];
+            message += "\r\n";
+            message += "\r\n";
+
+            message += clientActivity;
         }
 
         context.Response.ContentType = "text/plain";
