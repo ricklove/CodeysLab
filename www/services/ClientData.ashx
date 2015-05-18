@@ -32,6 +32,20 @@ public class Handler : IHttpHandler
                 }
             }
         }
+        else if (qs["GetReport"] == "VeryYes")
+        {
+            var clientID = BitConverter.ToUInt64(File.ReadAllBytes(ClientDataRootPath + "\\nextClientID.bin"), 0);
+
+            message += "Next Client ID = " + clientID + "\r\n";
+            foreach (var dir in Directory.GetDirectories(ClientDataRootPath))
+            {
+                foreach (var f in Directory.GetFiles(dir))
+                {
+                    var fileInfo = new FileInfo(f);
+                    message += fileInfo.DirectoryName + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length;
+                }
+            }
+        }
 
         context.Response.ContentType = "text/plain";
         context.Response.Write(message);
