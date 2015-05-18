@@ -127,10 +127,19 @@ public class Handler : IHttpHandler
     {
         var dir = ClientDataRootPath + "\\" + clientID + "\\";
         var path = dir + "log.txt";
-        var normalized = message.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
+
+        var fixedMessage = DecodeMessage(message);
+
+        var normalized = fixedMessage.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
 
         File.AppendAllText(path, time + "\t" + normalized);
+    }
+
+    public static string DecodeMessage(string message)
+    {
+        // Fix bugs in Unity encoder
+        return message.Replace("%3C", "<");
     }
 
 }
