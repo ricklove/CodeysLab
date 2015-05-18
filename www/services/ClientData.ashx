@@ -34,7 +34,7 @@ public class Handler : IHttpHandler
         }
         else if (qs["GetReport"] == "VeryYes")
         {
-            var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(ClientDataRootPath + "\\nextClientID.bin"), 0);
+            var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(GetNextClientIDPath()), 0);
 
             var activity = "";
             var lastActivity = new System.Collections.Generic.List<DateTime>();
@@ -126,13 +126,7 @@ public class Handler : IHttpHandler
 
     public string GetNextClientIDAndKey()
     {
-        var path = ClientDataRootPath + "\\nextClientID.bin";
-
-        // This should always exist (after initial creation)
-        //if (!File.Exists(path))
-        //{
-        //    File.WriteAllBytes(path, BitConverter.GetBytes((ulong)1));
-        //}
+        var path = GetNextClientIDPath();
 
         var binNextID = File.ReadAllBytes(path);
         var clientID = BitConverter.ToUInt64(binNextID, 0);
@@ -155,6 +149,19 @@ public class Handler : IHttpHandler
             File.WriteAllBytes(dir + "key.bin", BitConverter.GetBytes(key));
             return clientID + "_" + key;
         }
+    }
+
+    private string GetNextClientIDPath()
+    {
+        var path = ClientDataRootPath + "\\nextClientID.ulong.bin";
+
+        //// This should always exist (after initial creation)
+        //if (!File.Exists(path))
+        //{
+        //    File.WriteAllBytes(path, BitConverter.GetBytes((ulong)10));
+        //}
+
+        return path;
     }
 
     public int? GetClientKey(ulong clientID)
