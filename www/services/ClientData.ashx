@@ -42,7 +42,7 @@ public class Handler : IHttpHandler
                 foreach (var f in Directory.GetFiles(dir))
                 {
                     var fileInfo = new FileInfo(f);
-                    message += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length;
+                    message += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
                 }
             }
         }
