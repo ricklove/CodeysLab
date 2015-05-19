@@ -123,15 +123,24 @@ public class Handler : IHttpHandler
         var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
         var pastYear = now - new TimeSpan(365, 0, 0, 0);
 
-
-
         // Specific client activity
         var clientActivity = "";
+        var clientFeedback = "";
         var activityClientID = qs["ActivityClientID"];
         if (activityClientID != null)
         {
             var path = ClientDataRootPath + "\\" + activityClientID + "\\log.txt";
-            clientActivity = File.ReadAllText(path);
+
+            if (File.Exists(path))
+            {
+                clientActivity = File.ReadAllText(path);
+            }
+
+            var feedbackPath = ClientDataRootPath + "\\" + activityClientID + "\\feedbackLog.txt";
+            if (File.Exists(feedbackPath))
+            {
+                clientFeedback = File.ReadAllText(feedbackPath);
+            }
         }
 
         // Exception Log
