@@ -30,6 +30,9 @@ public class Handler : IHttpHandler
                 var exceptionMessage = context.Server.UrlDecode(context.Request.Unvalidated["Exception"]);
                 var stackTrace = context.Server.UrlDecode(context.Request.Unvalidated["StackTrace"]);
 
+                var sendFeedback = qs["SendFeedback"];
+                var feedbackData = context.Server.UrlDecode(context.Request.Unvalidated["FeedbackData"]);
+
                 if (logMessage != null)
                 {
                     AddToClientLog(clientID.Value, logMessage);
@@ -40,6 +43,10 @@ public class Handler : IHttpHandler
                     AddToClientLog(clientID.Value, exceptionMessage);
                     AddToExceptionLog(clientID.Value, exceptionMessage, stackTrace);
                     message = "OK";
+                }
+                else if (sendFeedback != null)
+                {
+                    AddToFeedback(clientID.Value, feedbackData);
                 }
             }
         }
@@ -308,6 +315,17 @@ public class Handler : IHttpHandler
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
 
         File.AppendAllText(path, time + "\t" + clientID + "\t" + normalized + "\r\n\t" + stackTraceFormatted);
+    }
+
+    public void AddToFeedbackLog(ulong clientID, string feedbackData)
+    {
+        var dir = ClientDataRootPath + "\\" + clientID + "\\";
+        var path = dir + "feedbackLog.txt";
+
+        var normalized = "\r\n\t" + feedbackData.Replace("\n", "\n\t") + "\r\n";
+        var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
+
+        File.AppendAllText(path, time + feedbackData);
     }
 
     //public static string DecodeMessage(string message)
