@@ -147,7 +147,19 @@ public class Handler : IHttpHandler
         var exceptionLogPath = ClientDataRootPath + "\\" + "exceptions.txt";
         var exceptionLog = File.Exists(exceptionLogPath) ? File.ReadAllText(exceptionLogPath) : "";
 
+        // Feedback
+        var feedbackLogPath = ClientDataRootPath + "\\" + "feedbackLog.txt";
+        var feedbackLog = File.Exists(feedbackLogPath) ? File.ReadAllText(feedbackLogPath) : "";
+        var feedbackLines = feedbackLog.Replace("\r\n", "\n").Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        var feedbackEntries = feedbackLines
+            .Where(l => l.StartsWith("\t"))
+            .Select(l => new { iEquals = l.IndexOf("="), line = l })
+            .Select(l => new { key = l.line.Substring(0, l.iEquals).Trim(), value = l.line.Substring(l.iEquals + 1).Trim() });
 
+        var feedbackGroups = feedbackEntries.GroupBy(e => e.key)
+            .Select(g => new { g.Key, Values = g.GroupBy(gv => gv.value).Select(gv => new { Value = gv.Key, Count = gv.Count(), Ratio = gv.Count() * 1.0 / g.Count() }) });
+
+        // Message
         message += "Next Client ID = " + nextClientID + "\r\n";
         message += "\r\n";
         message += lastActivity.Where(a => a > past1Hour).Count() + " Users Active in Past 1 Hour\r\n";
@@ -161,6 +173,21 @@ public class Handler : IHttpHandler
         message += "\r\n";
         message += activity;
         message += "\r\n";
+
+        // Feedback
+        foreach (var f in feedbackGroups)
+        {
+            message += f.Key;
+            message += "\r\n";
+
+            foreach (var fv in f.Values)
+            {
+                message += "\t" + fv.Ratio.ToString("0.0%") + "\t" + fv.Value;
+                message += "\r\n";
+            }
+
+            message += "\r\n";
+        }
 
         // Step Times
         if (stepTimes != null)
@@ -184,7 +211,7 @@ public class Handler : IHttpHandler
             message += "\r\n";
         }
 
-        if (clientActivity != "")
+        if (clientActivity != "" || clientFeedback != "")
         {
             message += "\r\n";
             message += "\r\n";
@@ -192,8 +219,13 @@ public class Handler : IHttpHandler
             message += "Activity for ClientID = " + activityClientID;
             message += "\r\n";
             message += "\r\n";
-
             message += clientActivity;
+            message += "\r\n";
+            message += "\r\n";
+            message += "Feedback ClientID = " + activityClientID;
+            message += "\r\n";
+            message += "\r\n";
+            message += clientFeedback;
         }
 
 
@@ -329,12 +361,17 @@ public class Handler : IHttpHandler
 
     public void AddToFeedbackLog(ulong clientID, string feedbackData)
     {
+        // Add to client feedback log
         var dir = ClientDataRootPath + "\\" + clientID + "\\";
         var path = dir + "feedbackLog.txt";
 
         var normalized = "\r\n\t" + feedbackData.Replace("\n", "\n\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
 
+        File.AppendAllText(path, time + feedbackData);
+
+        // Add to primary feedback log
+        path = ClientDataRootPath + "\\" + "feedbackLog.txt";
         File.AppendAllText(path, time + feedbackData);
     }
 
