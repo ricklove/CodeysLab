@@ -68,7 +68,7 @@ Would you mind giving us feedback so we can improve this lesson?
 ### TEXT: What other comments would you like to share with us?
 
 
-# EndOfLesson
+# EndOfCourse
 ## TITLE: Course Feedback
 ## MESSAGE:
 
