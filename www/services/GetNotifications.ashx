@@ -86,14 +86,5 @@ We are working on more courses, and your feedback will help us know what we shou
 
 ### TEXT: What features would that game include?
 
-
-# 2015-05-15 11:08
-## TITLE: Codey's Lab Framework Completed
-## IMAGE: http://codeyslab.com/notifications/images/codeyslablogo.png
-## LINK: http://codeyslab.com/2015-05-15_FrameworkCompleted
-## MESSAGE:
-Codey's Lab is released!
-Check it out!
-
 ";
 }
