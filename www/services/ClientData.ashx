@@ -131,6 +131,17 @@ public class Handler : IHttpHandler
                     message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
                     message += "\r\n";
                 }
+
+                message += "\r\n";
+                
+                values = stepTimes.Values.OrderByDescending(v => v.Average).ToList();
+                foreach (var sTimes in values)
+                {
+                    message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
+                    message += "\r\n";
+                }
+
+                message += "\r\n";
             }
 
             if (clientActivity != "")
