@@ -46,7 +46,8 @@ public class Handler : IHttpHandler
                 }
                 else if (sendFeedback != null)
                 {
-                    AddToFeedback(clientID.Value, feedbackData);
+                    AddToFeedbackLog(clientID.Value, feedbackData);
+                    message = "OK";
                 }
             }
         }
