@@ -125,7 +125,7 @@ public class Handler : IHttpHandler
             // Step Times
             if (stepTimes != null)
             {
-                var values = stepTimes.Values.OrderByDescending(v => v.Average).ToList();
+                var values = stepTimes.Values.OrderByDescending(v => v.Text).ToList();
                 foreach (var sTimes in values)
                 {
                     message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
