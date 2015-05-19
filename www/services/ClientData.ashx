@@ -120,6 +120,7 @@ public class Handler : IHttpHandler
             message += lastActivity.Count() + " Users Active Forever\r\n";
             message += "\r\n";
             message += activity;
+            message += "\r\n";
 
             // Step Times
             if (stepTimes != null)
