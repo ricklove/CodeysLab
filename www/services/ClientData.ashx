@@ -64,7 +64,7 @@ public class Handler : IHttpHandler
                                 .Select(aPart =>
                                 {
                                     var i = aPart.IndexOf(';');
-                                    return new { time = int.Parse(aPart.Substring(0, i - 1)), afterText = aPart.Substring(i) };
+                                    return new { time = int.Parse(aPart.Substring(0, i)), afterText = aPart.Substring(i + 1).Trim() };
                                 })
                                 ;
 
