@@ -35,9 +35,8 @@ Have fun and prepare to <b>Create your own Games.</b>
 If you ever have a problem, please let us know with this <b>feedback</b> form.
 
 ### CHOICE: What is the problem?
-- There is a Bug with this Step
-- This Step is Confusing
 - Something is Broken
+- There is a Mistake in the Course
 - Other
 
 ### TEXT: Please describe the problem so we can help: What happened?
