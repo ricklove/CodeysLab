@@ -154,6 +154,7 @@ public class Handler : IHttpHandler
         var feedbackEntries = feedbackLines
             .Where(l => l.StartsWith("\t"))
             .Select(l => new { iEquals = l.IndexOf("="), line = l })
+            .Where(l => l.iEquals != -1)
             .Select(l => new { key = l.line.Substring(0, l.iEquals).Trim(), value = l.line.Substring(l.iEquals + 1).Trim() });
 
         var feedbackGroups = feedbackEntries.GroupBy(e => e.key)
