@@ -125,9 +125,10 @@ public class Handler : IHttpHandler
             // Step Times
             if (stepTimes != null)
             {
-                foreach (var sTimes in stepTimes.Values)
+                var values = stepTimes.Values.OrderByDescending(v => v.Average).ToList();
+                foreach (var sTimes in values)
                 {
-                    message += "Average Time = " + (sTimes.Total * 1f / sTimes.Count) + " for " + sTimes.Text;
+                    message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
                     message += "\r\n";
                 }
             }
@@ -266,6 +267,8 @@ public class Handler : IHttpHandler
     {
         public int Count { get; set; }
         public long Total { get; set; }
+
+        public double Average { get { return Total * 1.0 / Count; } }
 
         public string Text { get; private set; }
 
