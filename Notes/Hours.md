@@ -24,3 +24,7 @@
 - Implement FileSystem Based Persistence Client Data
 - Implement Get Client ID
 - Implement Add Log
+
+## 17:30-18:12
+
+- Add specific client to report

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Web;
 using System.Linq;
+using System.Collections.Generic;
 
 public class Handler : IHttpHandler
 {
@@ -37,7 +38,10 @@ public class Handler : IHttpHandler
             var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(GetNextClientIDPath()), 0);
 
             var activity = "";
-            var lastActivity = new System.Collections.Generic.List<DateTime>();
+            var lastActivity = new List<DateTime>();
+
+            var shouldGetStepTimes = qs["StepTimes"] != null;
+            var stepTimes = new Dictionary<string, StepTime>();
 
             foreach (var dir in Directory.GetDirectories(ClientDataRootPath))
             {
@@ -49,6 +53,35 @@ public class Handler : IHttpHandler
                     if (f.Contains("log.txt"))
                     {
                         lastActivity.Add(fileInfo.LastWriteTimeUtc);
+
+                        // Time Reports for each step
+                        if (shouldGetStepTimes)
+                        {
+                            var content = File.ReadAllText(fileInfo.FullName);
+                            var timeLines = content.Split(new string[] { "\r\n" }, StringSplitOptions.None).Where(l => l.Contains("time=")).ToList();
+                            var timeTexts = timeLines
+                                .Select(l => l.Split(new string[] { "time=" }, StringSplitOptions.None)[1])
+                                .Select(aPart =>
+                                {
+                                    var i = aPart.IndexOf(';');
+                                    return new { time = int.Parse(aPart.Substring(0, i - 1)), afterText = aPart.Substring(i) };
+                                })
+                                ;
+
+
+                            foreach (var t in timeTexts)
+                            {
+                                if (!stepTimes.ContainsKey(t.afterText))
+                                {
+                                    stepTimes.Add(t.afterText, new StepTime(t.afterText));
+                                }
+
+                                var stepTime = stepTimes[t.afterText];
+                                stepTime.Count++;
+                                stepTime.Total += t.time;
+                            }
+
+                        }
                     }
                 }
             }
@@ -62,6 +95,8 @@ public class Handler : IHttpHandler
             var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
             var pastYear = now - new TimeSpan(365, 0, 0, 0);
 
+
+
             // Specific client activity
             var clientActivity = "";
             var activityClientID = qs["ActivityClientID"];
@@ -70,6 +105,8 @@ public class Handler : IHttpHandler
                 var path = ClientDataRootPath + "\\" + activityClientID + "\\log.txt";
                 clientActivity = File.ReadAllText(path);
             }
+
+
 
             message += "Next Client ID = " + nextClientID + "\r\n";
             message += "\r\n";
@@ -83,6 +120,16 @@ public class Handler : IHttpHandler
             message += lastActivity.Count() + " Users Active Forever\r\n";
             message += "\r\n";
             message += activity;
+
+            // Step Times
+            if (stepTimes != null)
+            {
+                foreach (var sTimes in stepTimes.Values)
+                {
+                    message += "Average Time = " + (sTimes.Total * 1f / sTimes.Count) + " for " + sTimes.Text;
+                    message += "\r\n";
+                }
+            }
 
             if (clientActivity != "")
             {
@@ -211,6 +258,20 @@ public class Handler : IHttpHandler
     {
         // Fix bugs in Unity encoder
         return message.Replace("%3C", "<");
+    }
+
+
+    public class StepTime
+    {
+        public int Count { get; set; }
+        public long Total { get; set; }
+
+        public string Text { get; private set; }
+
+        public StepTime(string text)
+        {
+            Text = text;
+        }
     }
 
 }
