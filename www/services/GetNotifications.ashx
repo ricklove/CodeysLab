@@ -85,5 +85,33 @@ We are working on more courses, and your feedback will help us know what we shou
 
 ### TEXT: What features would that game include?
 
+
+# 2015-05-19 16:26
+## TITLE: Community Vote: What Course do You Want?
+## MESSAGE:
+
+We at Digital Gaming Institute are helping Codey build some new courses.
+
+And we want the community to drive the priorities.
+
+We have chosen some old and new games based on those with the highest units sold to make our list.
+
+So, what course do you want to see next?
+
+### CHOICE: What type of game would you want to learn how to make?
+- Action Puzzle (like Tetris)
+- Voxel World Sandbox (like Minecraft)
+- Physics Based Destruction (like Angry Birds)
+- Tower Defense (like Plants vs Zombies)
+- First Person Shooter (like Call of Duty)
+- Role Playing Game (like Final Fantasy)
+- Real Time Strategy (like Starcraft)
+- 2D Platformer (like Super Mario Bros.)
+- 3D Platformer (like Super Mario Galaxy)
+- Racing (like Mario Kart)
+- Fighting (like Street Fighter)
+
+### TEXT: What option would you choose that is not listed?
+
 ";
 }
