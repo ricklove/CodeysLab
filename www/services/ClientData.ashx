@@ -368,11 +368,11 @@ public class Handler : IHttpHandler
         var normalized = "\r\n\t" + feedbackData.Replace("\n", "\n\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
 
-        File.AppendAllText(path, time + feedbackData);
+        File.AppendAllText(path, time + normalized);
 
         // Add to primary feedback log
         path = ClientDataRootPath + "\\" + "feedbackLog.txt";
-        File.AppendAllText(path, time + feedbackData);
+        File.AppendAllText(path, time + normalized);
     }
 
     //public static string DecodeMessage(string message)
