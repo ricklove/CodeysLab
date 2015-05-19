@@ -31,134 +31,157 @@ public class Handler : IHttpHandler
                     AddToClientLog(clientID.Value, qs["Log"]);
                     message = "OK";
                 }
+                else if (qs["Exception"] != null)
+                {
+                    AddToClientLog(clientID.Value, qs["Exception"] + " ::: " + context.Request["StackTrace"]);
+                    AddToExceptionLog(clientID.Value, qs["Exception"], context.Request["StackTrace"]);
+                    message = "OK";
+                }
             }
         }
         else if (qs["GetReport"] == "VeryYes")
         {
-            var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(GetNextClientIDPath()), 0);
-
-            var activity = "";
-            var lastActivity = new List<DateTime>();
-
-            var shouldGetStepTimes = qs["StepTimes"] != null;
-            var stepTimes = new Dictionary<string, StepTime>();
-
-            foreach (var dir in Directory.GetDirectories(ClientDataRootPath))
-            {
-                foreach (var f in Directory.GetFiles(dir))
-                {
-                    var fileInfo = new FileInfo(f);
-                    activity += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
-
-                    if (f.Contains("log.txt"))
-                    {
-                        lastActivity.Add(fileInfo.LastWriteTimeUtc);
-
-                        // Time Reports for each step
-                        if (shouldGetStepTimes)
-                        {
-                            var content = File.ReadAllText(fileInfo.FullName);
-                            var timeLines = content.Split(new string[] { "\r\n" }, StringSplitOptions.None).Where(l => l.Contains("time=")).ToList();
-                            var timeTexts = timeLines
-                                .Select(l => l.Split(new string[] { "time=" }, StringSplitOptions.None)[1])
-                                .Select(aPart =>
-                                {
-                                    var i = aPart.IndexOf(';');
-                                    return new { time = int.Parse(aPart.Substring(0, i)), afterText = aPart.Substring(i + 1).Trim() };
-                                })
-                                ;
-
-
-                            foreach (var t in timeTexts)
-                            {
-                                if (!stepTimes.ContainsKey(t.afterText))
-                                {
-                                    stepTimes.Add(t.afterText, new StepTime(t.afterText));
-                                }
-
-                                var stepTime = stepTimes[t.afterText];
-                                stepTime.Count++;
-                                stepTime.Total += t.time;
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            var now = DateTime.UtcNow;
-            var past1Hour = now - new TimeSpan(1, 0, 0);
-            var past6Hours = now - new TimeSpan(6, 0, 0);
-            var past24Hours = now - new TimeSpan(1, 0, 0, 0);
-            var past1Week = now - new TimeSpan(7, 0, 0, 0);
-            var past4Weeks = now - new TimeSpan(28, 0, 0, 0);
-            var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
-            var pastYear = now - new TimeSpan(365, 0, 0, 0);
-
-
-
-            // Specific client activity
-            var clientActivity = "";
-            var activityClientID = qs["ActivityClientID"];
-            if (activityClientID != null)
-            {
-                var path = ClientDataRootPath + "\\" + activityClientID + "\\log.txt";
-                clientActivity = File.ReadAllText(path);
-            }
-
-
-
-            message += "Next Client ID = " + nextClientID + "\r\n";
-            message += "\r\n";
-            message += lastActivity.Where(a => a > past1Hour).Count() + " Users Active in Past 1 Hour\r\n";
-            message += lastActivity.Where(a => a > past6Hours).Count() + " Users Active in Past 6 Hours\r\n";
-            message += lastActivity.Where(a => a > past24Hours).Count() + " Users Active in Past 24 Hours\r\n";
-            message += lastActivity.Where(a => a > past1Week).Count() + " Users Active in Past 1 Week\r\n";
-            message += lastActivity.Where(a => a > past4Weeks).Count() + " Users Active in Past 4 Weeks\r\n";
-            message += lastActivity.Where(a => a > past12Weeks).Count() + " Users Active in Past 12 Weeks\r\n";
-            message += lastActivity.Where(a => a > pastYear).Count() + " Users Active in Past 1 Year\r\n";
-            message += lastActivity.Count() + " Users Active Forever\r\n";
-            message += "\r\n";
-            message += activity;
-            message += "\r\n";
-
-            // Step Times
-            if (stepTimes != null)
-            {
-                var values = stepTimes.Values.OrderByDescending(v => v.Text).ToList();
-                foreach (var sTimes in values)
-                {
-                    message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
-                    message += "\r\n";
-                }
-
-                message += "\r\n";
-                
-                values = stepTimes.Values.OrderByDescending(v => v.Average).ToList();
-                foreach (var sTimes in values)
-                {
-                    message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
-                    message += "\r\n";
-                }
-
-                message += "\r\n";
-            }
-
-            if (clientActivity != "")
-            {
-                message += "\r\n";
-                message += "\r\n";
-                message += "\r\n";
-                message += "Activity for ClientID = " + activityClientID;
-                message += "\r\n";
-                message += "\r\n";
-
-                message += clientActivity;
-            }
+            message = GetReport(qs);
         }
 
         context.Response.ContentType = "text/plain";
         context.Response.Write(message);
+    }
+
+    private string GetReport(System.Collections.Specialized.NameValueCollection qs)
+    {
+        var message = "";
+        var nextClientID = BitConverter.ToUInt64(File.ReadAllBytes(GetNextClientIDPath()), 0);
+
+        var activity = "";
+        var lastActivity = new List<DateTime>();
+
+        var shouldGetStepTimes = qs["StepTimes"] != null;
+        var stepTimes = new Dictionary<string, StepTime>();
+
+        foreach (var dir in Directory.GetDirectories(ClientDataRootPath))
+        {
+            foreach (var f in Directory.GetFiles(dir))
+            {
+                var fileInfo = new FileInfo(f);
+                activity += fileInfo.Directory.Name + "\\" + fileInfo.Name + "; Created On = " + fileInfo.CreationTimeUtc + "; Last Modified On = " + fileInfo.LastWriteTimeUtc + "; Length = " + fileInfo.Length + "\r\n";
+
+                if (f.Contains("log.txt"))
+                {
+                    lastActivity.Add(fileInfo.LastWriteTimeUtc);
+
+                    // Time Reports for each step
+                    if (shouldGetStepTimes)
+                    {
+                        var content = File.ReadAllText(fileInfo.FullName);
+                        var timeLines = content.Split(new string[] { "\r\n" }, StringSplitOptions.None).Where(l => l.Contains("time=")).ToList();
+                        var timeTexts = timeLines
+                            .Select(l => l.Split(new string[] { "time=" }, StringSplitOptions.None)[1])
+                            .Select(aPart =>
+                            {
+                                var i = aPart.IndexOf(';');
+                                return new { time = int.Parse(aPart.Substring(0, i)), afterText = aPart.Substring(i + 1).Trim() };
+                            })
+                            ;
+
+
+                        foreach (var t in timeTexts)
+                        {
+                            if (!stepTimes.ContainsKey(t.afterText))
+                            {
+                                stepTimes.Add(t.afterText, new StepTime(t.afterText));
+                            }
+
+                            var stepTime = stepTimes[t.afterText];
+                            stepTime.Count++;
+                            stepTime.Total += t.time;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        var now = DateTime.UtcNow;
+        var past1Hour = now - new TimeSpan(1, 0, 0);
+        var past6Hours = now - new TimeSpan(6, 0, 0);
+        var past24Hours = now - new TimeSpan(1, 0, 0, 0);
+        var past1Week = now - new TimeSpan(7, 0, 0, 0);
+        var past4Weeks = now - new TimeSpan(28, 0, 0, 0);
+        var past12Weeks = now - new TimeSpan(84, 0, 0, 0);
+        var pastYear = now - new TimeSpan(365, 0, 0, 0);
+
+
+
+        // Specific client activity
+        var clientActivity = "";
+        var activityClientID = qs["ActivityClientID"];
+        if (activityClientID != null)
+        {
+            var path = ClientDataRootPath + "\\" + activityClientID + "\\log.txt";
+            clientActivity = File.ReadAllText(path);
+        }
+
+        // Exception Log
+        var exceptionLogPath = ClientDataRootPath + "\\" + "exceptions.txt";
+        var exceptionLog = File.Exists(exceptionLogPath) ? File.ReadAllText(exceptionLogPath) : "";
+        
+
+        message += "Next Client ID = " + nextClientID + "\r\n";
+        message += "\r\n";
+        message += lastActivity.Where(a => a > past1Hour).Count() + " Users Active in Past 1 Hour\r\n";
+        message += lastActivity.Where(a => a > past6Hours).Count() + " Users Active in Past 6 Hours\r\n";
+        message += lastActivity.Where(a => a > past24Hours).Count() + " Users Active in Past 24 Hours\r\n";
+        message += lastActivity.Where(a => a > past1Week).Count() + " Users Active in Past 1 Week\r\n";
+        message += lastActivity.Where(a => a > past4Weeks).Count() + " Users Active in Past 4 Weeks\r\n";
+        message += lastActivity.Where(a => a > past12Weeks).Count() + " Users Active in Past 12 Weeks\r\n";
+        message += lastActivity.Where(a => a > pastYear).Count() + " Users Active in Past 1 Year\r\n";
+        message += lastActivity.Count() + " Users Active Forever\r\n";
+        message += "\r\n";
+        message += activity;
+        message += "\r\n";
+
+        // Step Times
+        if (stepTimes != null)
+        {
+            var values = stepTimes.Values.OrderByDescending(v => v.Text).ToList();
+            foreach (var sTimes in values)
+            {
+                message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
+                message += "\r\n";
+            }
+
+            message += "\r\n";
+
+            values = stepTimes.Values.OrderByDescending(v => v.Average).ToList();
+            foreach (var sTimes in values)
+            {
+                message += "Average Time = " + sTimes.Average.ToString("f1") + " for " + sTimes.Text;
+                message += "\r\n";
+            }
+
+            message += "\r\n";
+        }
+
+        if (clientActivity != "")
+        {
+            message += "\r\n";
+            message += "\r\n";
+            message += "\r\n";
+            message += "Activity for ClientID = " + activityClientID;
+            message += "\r\n";
+            message += "\r\n";
+
+            message += clientActivity;
+        }
+
+
+        message += "\r\n";
+        message += "\r\n";
+        message += exceptionLog;
+        message += "\r\n";
+
+        return message;
     }
 
     public bool IsReusable
@@ -260,6 +283,21 @@ public class Handler : IHttpHandler
         var path = dir + "log.txt";
 
         var fixedMessage = DecodeMessage(message);
+
+        var normalized = fixedMessage.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
+        var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
+
+        File.AppendAllText(path, time + "\t" + normalized);
+    }
+
+    public void AddToExceptionLog(ulong clientID, string message, string stackTrace)
+    {
+        var dir = ClientDataRootPath + "\\";
+        var path = dir + "exceptions.txt";
+
+        var fixedMessage = DecodeMessage(message);
+
+        fixedMessage += " ::: " + stackTrace;
 
         var normalized = fixedMessage.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
