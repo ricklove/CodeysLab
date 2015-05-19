@@ -26,15 +26,19 @@ public class Handler : IHttpHandler
 
             if (clientID != null)
             {
-                if (qs["Log"] != null)
+                var logMessage = context.Server.UrlDecode(context.Request.Unvalidated["Log"]);
+                var exceptionMessage = context.Server.UrlDecode(context.Request.Unvalidated["Exception"]);
+                var stackTrace = context.Server.UrlDecode(context.Request.Unvalidated["StackTrace"]);
+
+                if (logMessage != null)
                 {
-                    AddToClientLog(clientID.Value, qs["Log"]);
+                    AddToClientLog(clientID.Value, logMessage);
                     message = "OK";
                 }
-                else if (qs["Exception"] != null)
+                else if (exceptionMessage != null)
                 {
-                    AddToClientLog(clientID.Value, qs["Exception"] + " ::: " + context.Request["StackTrace"]);
-                    AddToExceptionLog(clientID.Value, qs["Exception"], context.Request["StackTrace"]);
+                    AddToClientLog(clientID.Value, exceptionMessage);
+                    AddToExceptionLog(clientID.Value, exceptionMessage, stackTrace);
                     message = "OK";
                 }
             }
@@ -125,7 +129,7 @@ public class Handler : IHttpHandler
         // Exception Log
         var exceptionLogPath = ClientDataRootPath + "\\" + "exceptions.txt";
         var exceptionLog = File.Exists(exceptionLogPath) ? File.ReadAllText(exceptionLogPath) : "";
-        
+
 
         message += "Next Client ID = " + nextClientID + "\r\n";
         message += "\r\n";
@@ -177,6 +181,8 @@ public class Handler : IHttpHandler
 
 
         message += "\r\n";
+        message += "\r\n";
+        message += "EXCEPTIONS:";
         message += "\r\n";
         message += exceptionLog;
         message += "\r\n";
@@ -282,7 +288,7 @@ public class Handler : IHttpHandler
         var dir = ClientDataRootPath + "\\" + clientID + "\\";
         var path = dir + "log.txt";
 
-        var fixedMessage = DecodeMessage(message);
+        var fixedMessage = message;//DecodeMessage(message);
 
         var normalized = fixedMessage.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
@@ -295,21 +301,20 @@ public class Handler : IHttpHandler
         var dir = ClientDataRootPath + "\\";
         var path = dir + "exceptions.txt";
 
-        var fixedMessage = DecodeMessage(message);
-
-        fixedMessage += " ::: " + stackTrace;
+        var fixedMessage = message;//DecodeMessage(message);
+        var stackTraceFormatted = (" " + stackTrace).Replace(" at ", "\r\n\tat ").Replace(" in ", "\r\n\tin ") + "\r\n\r\n";
 
         var normalized = fixedMessage.Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t") + "\r\n";
         var time = DateTime.UtcNow.ToShortDateString() + "\t" + DateTime.UtcNow.ToShortTimeString();
 
-        File.AppendAllText(path, time + "\t" + normalized);
+        File.AppendAllText(path, time + "\t" + clientID + "\t" + normalized + "\r\n\t" + stackTraceFormatted);
     }
 
-    public static string DecodeMessage(string message)
-    {
-        // Fix bugs in Unity encoder
-        return message.Replace("%3C", "<");
-    }
+    //public static string DecodeMessage(string message)
+    //{
+    //    // Fix bugs in Unity encoder
+    //    return message.Replace("%3C", "<");
+    //}
 
 
     public class StepTime
