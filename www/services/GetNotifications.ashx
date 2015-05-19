@@ -95,20 +95,5 @@ We are working on more courses, and your feedback will help us know what we shou
 Codey's Lab is released!
 Check it out!
 
-
-# 2015-05-19 10:06
-## TITLE: Test
-## MESSAGE:
-
-Try this entry form.
-
-### CHOICE: Which one is your favorite?
-- Choice A
-- Choice B
-- Choice C
-- Choice D
-
-### TEXT: What do you think about this?
-
 ";
 }
