@@ -172,10 +172,11 @@ public class Handler : IHttpHandler
         message += lastActivity.Where(a => a > pastYear).Count() + " Users Active in Past 1 Year\r\n";
         message += lastActivity.Count() + " Users Active Forever\r\n";
         message += "\r\n";
-        message += activity;
-        message += "\r\n";
 
         // Feedback
+        message += "\r\n";
+        message += "Client Feedback";
+        message += "\r\n";
         foreach (var f in feedbackGroups)
         {
             message += f.Key;
@@ -189,6 +190,13 @@ public class Handler : IHttpHandler
 
             message += "\r\n";
         }
+
+        // Activity
+        message += "\r\n";
+        message += "Client Activity";
+        message += "\r\n";
+        message += activity;
+        message += "\r\n";
 
         // Step Times
         if (stepTimes != null)

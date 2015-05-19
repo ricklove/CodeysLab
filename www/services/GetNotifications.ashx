@@ -32,7 +32,7 @@ Have fun and prepare to <b>Create your own Games.</b>
 ## TITLE: Provide Feedback
 ## MESSAGE:
 
-If you ever have a problem, please let us know with this <b>feedback</b> from.
+If you ever have a problem, please let us know with this <b>feedback</b> form.
 
 ### CHOICE: What is the problem?
 - There is a Bug with this Step
