@@ -102,7 +102,7 @@ Check it out!
 
 Try this entry form.
 
-### CHOICE:
+### CHOICE: Which one is your favorite?
 - Choice A
 - Choice B
 - Choice C
