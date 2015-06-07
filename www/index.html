@@ -21,6 +21,7 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link rel="stylesheet" href="css/flipclock.css">
     <style>
         .intro-text {
             font-weight: bold;
@@ -161,21 +162,28 @@
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Download</h2>
+
+                    <p>
+                        Publishing on Monday June 8, 2015
+                    </p>
+                    <div class="clock" style="margin:2em;"></div>
+
                     <p>Download Courses from the Unity Asset Store!</p>
+
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="https://www.assetstore.unity3d.com/en/#!/search/codey's%20lab" class="btn btn-default btn-lg"><img src="img/Unity_3D_logo.png"><br /><span class="network-name">Asset Store Courses</span></a>
+                            <a href="javascript:;https://www.assetstore.unity3d.com/en/#!/search/codey's%20lab" class="btn btn-default btn-lg"><img src="img/Unity_3D_logo.png"><br /><span class="network-name">Asset Store Courses</span></a>
                         </li>
 
                         <!--<li>
                             <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
                         </li>-->
-                        <!--<li>
-                            <a href="https://facebook.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
-                        </li>
-                        <li>
-                            <a href="https://plus.google.com/+Startbootstrap/posts" class="btn btn-default btn-lg"><i class="fa fa-google-plus fa-fw"></i> <span class="network-name">Google+</span></a>
-                        </li>-->
+                    <!--<li>
+                        <a href="https://facebook.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
+                    </li>
+                    <li>
+                        <a href="https://plus.google.com/+Startbootstrap/posts" class="btn btn-default btn-lg"><i class="fa fa-google-plus fa-fw"></i> <span class="network-name">Google+</span></a>
+                    </li>-->
                     </ul>
                 </div>
             </div>
@@ -231,5 +239,35 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>
+
+    <script src="js/flipclock.min.js"></script>
+    <script type="text/javascript">
+        var clock;
+
+        $(document).ready(function () {
+
+            // Grab the current date
+            var currentDate = new Date();
+
+            // Set some date in the future. (Javascript month is off by one)
+            var futureDate = new Date(2015, 5, 8, 18);
+
+            // Calculate the difference in seconds between the future and current date
+            var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
+
+            var shouldCountdown = true;
+            if (diff < 0) {
+                diff = -diff;
+                shouldCountdown = false;
+            }
+
+            // Instantiate a coutdown FlipClock
+            clock = $('.clock').FlipClock(diff, {
+                clockFace: 'DailyCounter',
+                countdown: shouldCountdown
+            });
+        });
+    </script>
+
 </body>
 </html>
