@@ -75,15 +75,21 @@ Awesome! You finished the course.
 
 We hope it was beneficial for you.
 
-We are working on more courses, and your feedback will help us know what we should prioritize.
+We are working on more courses, and your support will help us continue make great lessons.
 
-### CHOICE: What would be most interesting to you?
-- Adding more advanced features to this course
-- A course in a different genre
+If you believe Codey's Lab is the best way to learn, you can help us continue:
 
-### TEXT: What type of game would you most like to learn how to make?
+<b>• Leave an honest review</b> on the Asset Store
 
-### TEXT: What features would that game include?
+<b>• Share about Codey's Lab</b> on your Facebook, Twitter, Reddit, or other Social Media
+
+<b>• Make a Youtube video</b> of yourself going through part of the course in Codey's Lab
+
+### CHOICE: Will you help us?
+- Yes, I'll explain how it helped me in an honest review.
+- Yes, I'll explain Codey's Lab to my friends on social media and give them a link to the asset store.
+- Yes, I'll make a Youtube video and record myself going through part of Codey's Lab.
+- No, don't bug me.
 
 
 # 2015-05-19 16:26
