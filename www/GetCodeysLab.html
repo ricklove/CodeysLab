@@ -54,10 +54,31 @@
         }
 
         .fb_conversion {
-            /* CHANGE TO FACEBOOK NOSCRIPT CONVERSION TRACKING PIXEL */  
-            background-image: url('https://www.facebook.com/offsite_event.php?id=33333333333&value=0&currency=USD');
+            /* CHANGE TO FACEBOOK NOSCRIPT CONVERSION TRACKING PIXEL */
+            background-image: url('https://www.facebook.com/offsite_event.php?id=1047318238612633&ev=Lead');
         }
     </style>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            }; if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+        }(window,
+        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+
+        fbq('init', '1047318238612633');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=1047318238612633&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
     <!-- Navigation -->
@@ -104,6 +125,11 @@
                         </h1>
                         <p class="intro-text">Get Codey's Lab</p>
 
+                        <!--REMEMBER: Change size of this file - That's right! -->
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/rSybDVd4gmI" frameborder="0" allowfullscreen></iframe>
+                        <p style="color:yellow">Preview Codey's Lab - Space Shooter</p>
+                        <br />
+                        <p style="color:yellow">Follow the Directions below to get Codey's Lab</p>
 
                     </div>
                 </div>
