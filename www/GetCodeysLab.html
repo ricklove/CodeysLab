@@ -59,26 +59,7 @@
         }
     </style>
 
-    <!-- Facebook Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            }; if (!f._fbq) f._fbq = n;
-            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
-        }(window,
-        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
 
-        fbq('init', '1047318238612633');
-        fbq('track', 'PageView');
-    </script>
-    <noscript>
-        <img height="1" width="1" style="display:none"
-             src="https://www.facebook.com/tr?id=1047318238612633&ev=PageView&noscript=1" />
-    </noscript>
-    <!-- End Facebook Pixel Code -->
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
     <!-- Navigation -->
@@ -226,14 +207,29 @@
 
     </script>
 
+    <!-- Facebook Pixel Code -->
     <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            }; if (!f._fbq) f._fbq = n;
+            n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+        }(window,
+        document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+
+        fbq('init', '1047318238612633');
+        fbq('track', 'PageView');
+
+
         // http://stackoverflow.com/a/19321050/567524
         $('.btnPurchaseCourse').each(function () {
             var href = $(this).attr('href');
             $(this).click(function () {
 
                 // Add Tracking Pixel
-                $("#fb_pixel").addClass("fb_conversion");
+                fbq('track', 'Lead');
 
                 // Follow link (after delay to make sure tracking pixel was requested)
                 setTimeout(function () {
@@ -242,7 +238,11 @@
             })
         });
 
-
     </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=1047318238612633&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
 </body>
 </html>
